@@ -1,0 +1,6 @@
+{
+  "name": "Little Nest",
+  "description": "Ein stilvoller Online-Shop für minimalistisches und gemütliches Wohnen. Entdecke handverlesene Dekoartikel, nachhaltige Textilien, Möbel und exklusive Angebote.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
