@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   ShoppingBag, 
@@ -62,7 +62,11 @@ export default function App() {
 
   // Sync scroll on tab switch
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    try {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (e) {
+      console.warn("window.scrollTo not supported or allowed in this context", e);
+    }
     setMobileMenuOpen(false);
   }, [activeTab]);
 
@@ -171,7 +175,10 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col font-sans bg-white selection:bg-linen selection:text-bark">
+    <div className="min-h-screen flex flex-col font-sans bg-[#FDFAF6] selection:bg-linen selection:text-bark relative overflow-x-hidden">
+      {/* Background Decorative Elements */}
+      <div className="absolute top-[-100px] left-[-100px] w-[400px] h-[400px] bg-[#F4EDE3] rounded-full blur-[80px] opacity-60 pointer-events-none z-0"></div>
+      <div className="absolute bottom-[-50px] right-[-50px] w-[300px] h-[300px] bg-[#EDE3D7] rounded-full blur-[60px] opacity-50 pointer-events-none z-0"></div>
       
       {/* Dynamic Toast Notifications */}
       <div className="fixed bottom-6 right-6 z-[300] flex flex-col gap-2 max-w-sm w-full">
@@ -198,7 +205,7 @@ export default function App() {
       </div>
 
       {/* HEADER / NAVBAR */}
-      <nav className="sticky top-0 z-[100] bg-white/95 backdrop-blur-md border-b border-linen">
+      <nav className="sticky top-0 z-[100] bg-white/40 backdrop-blur-md border-b border-white/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
@@ -296,11 +303,11 @@ export default function App() {
               {/* Shopping Cart button */}
               <button 
                 onClick={() => { setIsCartOpen(true); setCheckoutStep('cart'); }}
-                className="flex items-center gap-2 text-bark bg-linen hover:bg-clay hover:text-white transition-all duration-300 px-4 py-2.5 rounded-full cursor-pointer shadow-sm group font-medium"
+                className="flex items-center gap-2 text-bark bg-white/60 backdrop-blur-sm border border-white/40 shadow-sm hover:bg-clay hover:text-white transition-all duration-300 px-4 py-2.5 rounded-full cursor-pointer group font-medium"
                 id="cart-trigger-button"
               >
                 <ShoppingBag className="w-4.5 h-4.5 group-hover:scale-110 transition-transform" />
-                <span className="text-xs sm:text-sm font-semibold">Warenkorb</span>
+                <span className="text-xs sm:text-sm font-semibold font-display">Warenkorb</span>
                 <span className="bg-clay text-white text-xs font-bold w-5.5 h-5.5 rounded-full flex items-center justify-center group-hover:bg-white group-hover:text-clay transition-all duration-300">
                   {totalItemsCount}
                 </span>
@@ -326,7 +333,7 @@ export default function App() {
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.25 }}
-              className="md:hidden border-t border-linen bg-white overflow-hidden"
+              className="md:hidden border-t border-white/20 bg-white/60 backdrop-blur-md overflow-hidden"
             >
               <div className="px-4 pt-3 pb-6 space-y-1.5 flex flex-col">
                 <button 
@@ -386,44 +393,41 @@ export default function App() {
               transition={{ duration: 0.35 }}
             >
               {/* Hero Section */}
-              <section className="bg-sand relative overflow-hidden">
-                <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 items-center min-h-[650px]">
+              <section className="bg-white/30 backdrop-blur-md border border-white/20 rounded-3xl m-4 sm:m-6 lg:m-8 overflow-hidden relative shadow-sm">
+                <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 items-center min-h-[600px]">
                   <div className="p-8 sm:p-12 lg:p-16 flex flex-col justify-center max-w-xl z-10">
-                    <span className="text-clay font-bold text-xs uppercase tracking-widest mb-3 flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5 fill-clay" /> NEUE SOMMER-KOLLEKTION
-                    </span>
-                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight text-bark font-display leading-[1.1] mb-6">
+                    <span className="text-[#8A9B8E] uppercase tracking-[0.2em] text-xs font-bold mb-4 block">Wohnen mit Gefühl</span>
+                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display leading-[1.1] text-bark mb-6">
                       Dein Zuhause,<br />
-                      <em className="text-clay not-italic font-semibold">dein Gefühl.</em>
+                      <i className="italic font-normal text-clay">dein Gefühl.</i>
                     </h1>
-                    <p className="text-base sm:text-lg text-bark/80 leading-relaxed mb-8">
-                      Entdecke unsere neue, nachhaltige Kollektion für minimalistisches, warmes und absolut gemütliches Wohnen. Handgefertigte Einzelstücke für deine Wohlfühloase.
+                    <p className="text-base sm:text-lg text-bark/60 mb-10 max-w-md leading-relaxed">
+                      Entdecke unsere neue Kollektion für minimalistisches und gemütliches Wohnen. Jetzt für kurze Zeit reduziert.
                     </p>
                     
-                    {/* BUTTONS CONTAINER: Includes the requested CTA leading to Sale % page! */}
-                    <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center">
+                    {/* BUTTONS CONTAINER: Styled after Frosted Glass Theme red & brown style */}
+                    <div className="flex flex-wrap gap-4 items-center">
                       <button 
                         onClick={() => { setActiveTab('shop'); setSelectedCategory('all'); }}
-                        className="bg-clay text-white px-8 py-4 rounded-full font-semibold text-sm shadow-md hover:bg-bark transition-all duration-300 text-center cursor-pointer flex items-center justify-center gap-2"
+                        className="px-8 py-4 bg-bark text-white rounded-full font-medium shadow-lg hover:shadow-xl hover:bg-clay transition-all duration-300 text-center cursor-pointer flex items-center justify-center gap-2"
                         id="hero-cta-shop"
                       >
                         Kollektion ansehen
                         <ArrowRight className="w-4 h-4" />
                       </button>
                       
-                      {/* NEWLY ADDED BUTTON to navigate directly to the Sale section! */}
+                      {/* RED THEMED BUTTON from the design HTML for Zum Sale */}
                       <button 
                         onClick={() => setActiveTab('sale')}
-                        className="bg-white/90 hover:bg-white text-[#d9534f] border-2 border-[#d9534f]/30 hover:border-[#d9534f] px-8 py-4 rounded-full font-semibold text-sm shadow-sm transition-all duration-300 text-center cursor-pointer flex items-center justify-center gap-2"
+                        className="px-8 py-4 bg-[#d9534f] text-white rounded-full font-bold shadow-lg hover:bg-[#c1413d] hover:shadow-xl transition-all duration-300 text-center cursor-pointer flex items-center justify-center gap-2"
                         id="hero-cta-sale"
                       >
-                        <Percent className="w-4 h-4 animate-bounce" />
-                        <span>Zum Sale % sparen</span>
+                        🔥 Zum Sale %
                       </button>
                     </div>
 
                     {/* Features Badges */}
-                    <div className="grid grid-cols-3 gap-2 mt-12 pt-8 border-t border-bark/10 text-xs text-bark/70 font-medium">
+                    <div className="grid grid-cols-3 gap-2 mt-12 pt-8 border-t border-white/20 text-xs text-bark/70 font-medium">
                       <div className="flex items-center gap-1.5">
                         <Check className="w-3.5 h-3.5 text-clay" /> Handgefertigt
                       </div>
@@ -436,34 +440,26 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* Hero Visual side with zoom and delicate overlay */}
-                  <div className="relative h-[400px] lg:h-full min-h-[450px] w-full bg-linen">
+                  {/* Hero Visual side with design frame styling */}
+                  <div className="relative h-[450px] lg:h-[500px] w-full flex items-center justify-center p-6 lg:p-12">
+                    <div className="absolute inset-6 bg-[#B87050]/10 rounded-[40px] transform rotate-3"></div>
                     <img 
                       src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1200&q=80&fit=crop" 
                       alt="Modernes Wohnzimmer mit Little Nest Möbeln"
-                      className="absolute inset-0 w-full h-full object-cover"
+                      className="w-full h-full object-cover rounded-[40px] shadow-2xl border-4 border-white relative z-10"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-sand/20 to-transparent pointer-events-none" />
-                    {/* Floating highlight */}
-                    <div className="absolute bottom-6 left-6 bg-white/95 backdrop-blur-sm p-4 rounded-2xl shadow-md border border-linen/50 max-w-xs hidden sm:block">
-                      <div className="flex items-center gap-3">
-                        <img 
-                          src="https://images.unsplash.com/photo-1594620302200-9a762244a156?w=100" 
-                          alt="Detail" 
-                          className="w-10 h-10 rounded-lg object-cover"
-                        />
-                        <div>
-                          <p className="text-xs font-bold text-bark">Liebling der Woche</p>
-                          <p className="text-xs text-clay font-medium">Eichen-Regal Minimal • 149,00 €</p>
-                        </div>
-                      </div>
+                    {/* Floating Promo Card using backdrop-blur-xl bg-white/70 */}
+                    <div className="absolute -bottom-2 left-6 z-20 w-48 p-4 backdrop-blur-xl bg-white/70 border border-white/50 rounded-2xl shadow-xl hidden sm:block">
+                      <p className="text-[#d9534f] font-bold text-xs uppercase mb-1">Spezial Angebot</p>
+                      <p className="text-xl font-display font-bold text-[#5C3D2A]">Bis zu -50%</p>
+                      <p className="text-[10px] text-gray-500 mt-2">Nur solange der Vorrat reicht.</p>
                     </div>
                   </div>
                 </div>
               </section>
 
               {/* Collections Grid (Kategorien) */}
-              <section className="py-24 bg-white">
+              <section className="py-24 bg-transparent">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                   <p className="text-center text-clay font-semibold text-xs tracking-widest uppercase mb-2">Kollektionen</p>
                   <h2 className="text-center text-3xl sm:text-4xl font-medium text-bark font-display mb-12">Finde deinen Wohnstil</h2>
@@ -479,12 +475,12 @@ export default function App() {
                         alt="Deko-Kollektion" 
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-bark/90 via-bark/30 to-transparent" />
-                      <div className="absolute bottom-6 left-6 text-white">
-                        <span className="text-[10px] uppercase tracking-widest text-linen/80">Handverlesen</span>
-                        <h3 className="font-display text-2xl font-medium mt-1">Deko</h3>
-                        <p className="text-xs text-sand/80 mt-1 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
-                          Entdecken <ChevronRight className="w-3 h-3" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-bark/40 via-transparent to-transparent" />
+                      <div className="absolute inset-x-4 bottom-4 backdrop-blur-md bg-white/60 border border-white/30 rounded-2xl p-4 text-bark shadow-sm transition-all group-hover:bg-white/85">
+                        <span className="text-[10px] uppercase tracking-widest text-clay font-bold">Handverlesen</span>
+                        <h3 className="font-display text-xl font-medium mt-0.5">Deko</h3>
+                        <p className="text-xs opacity-75 mt-0.5 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+                          Entdecken <ChevronRight className="w-3.5 h-3.5 text-clay" />
                         </p>
                       </div>
                     </button>
@@ -499,12 +495,12 @@ export default function App() {
                         alt="Textilien-Kollektion" 
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-bark/90 via-bark/30 to-transparent" />
-                      <div className="absolute bottom-6 left-6 text-white">
-                        <span className="text-[10px] uppercase tracking-widest text-linen/80">Natürliche Fasern</span>
-                        <h3 className="font-display text-2xl font-medium mt-1">Textilien</h3>
-                        <p className="text-xs text-sand/80 mt-1 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
-                          Entdecken <ChevronRight className="w-3 h-3" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-bark/40 via-transparent to-transparent" />
+                      <div className="absolute inset-x-4 bottom-4 backdrop-blur-md bg-white/60 border border-white/30 rounded-2xl p-4 text-bark shadow-sm transition-all group-hover:bg-white/85">
+                        <span className="text-[10px] uppercase tracking-widest text-clay font-bold">Natürliche Fasern</span>
+                        <h3 className="font-display text-xl font-medium mt-0.5">Textilien</h3>
+                        <p className="text-xs opacity-75 mt-0.5 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+                          Entdecken <ChevronRight className="w-3.5 h-3.5 text-clay" />
                         </p>
                       </div>
                     </button>
@@ -519,12 +515,12 @@ export default function App() {
                         alt="Möbel-Kollektion" 
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-bark/90 via-bark/30 to-transparent" />
-                      <div className="absolute bottom-6 left-6 text-white">
-                        <span className="text-[10px] uppercase tracking-widest text-linen/80">Echtholz & Handwerk</span>
-                        <h3 className="font-display text-2xl font-medium mt-1">Möbel</h3>
-                        <p className="text-xs text-sand/80 mt-1 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
-                          Entdecken <ChevronRight className="w-3 h-3" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-bark/40 via-transparent to-transparent" />
+                      <div className="absolute inset-x-4 bottom-4 backdrop-blur-md bg-white/60 border border-white/30 rounded-2xl p-4 text-bark shadow-sm transition-all group-hover:bg-white/85">
+                        <span className="text-[10px] uppercase tracking-widest text-clay font-bold">Echtholz &amp; Handwerk</span>
+                        <h3 className="font-display text-xl font-medium mt-0.5">Möbel</h3>
+                        <p className="text-xs opacity-75 mt-0.5 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+                          Entdecken <ChevronRight className="w-3.5 h-3.5 text-clay" />
                         </p>
                       </div>
                     </button>
@@ -532,21 +528,19 @@ export default function App() {
                     {/* Sale Collection card */}
                     <button 
                       onClick={() => setActiveTab('sale')}
-                      className="group relative rounded-2xl overflow-hidden aspect-[3/4] shadow-md hover:shadow-xl transition-all duration-300 text-left cursor-pointer w-full border-2 border-[#d9534f]/10"
+                      className="group relative rounded-2xl overflow-hidden aspect-[3/4] shadow-md hover:shadow-xl transition-all duration-300 text-left cursor-pointer w-full border border-[#d9534f]/10"
                     >
                       <img 
                         src="https://images.unsplash.com/photo-1603204077167-2fa0397f591b?w=600" 
                         alt="Sale Angebote" 
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#8c2a27]/90 via-[#d9534f]/30 to-transparent" />
-                      <div className="absolute bottom-6 left-6 text-white">
-                        <span className="text-[10px] bg-white/95 text-[#d9534f] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
-                          Reduziert
-                        </span>
-                        <h3 className="font-display text-2xl font-medium mt-2">Sale %</h3>
-                        <p className="text-xs text-red-100 mt-1 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1 font-semibold">
-                          Jetzt sparen <ChevronRight className="w-3 h-3" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-bark/40 via-transparent to-transparent" />
+                      <div className="absolute inset-x-4 bottom-4 backdrop-blur-md bg-white/60 border border-white/30 rounded-2xl p-4 text-bark shadow-sm transition-all group-hover:bg-white/85">
+                        <span className="text-[10px] text-[#d9534f] font-bold uppercase tracking-wider">Reduziert</span>
+                        <h3 className="font-display text-xl font-medium mt-0.5 text-[#d9534f]">Sale %</h3>
+                        <p className="text-xs text-[#d9534f]/95 mt-0.5 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1 font-semibold">
+                          Jetzt sparen <ChevronRight className="w-3.5 h-3.5 text-[#d9534f]" />
                         </p>
                       </div>
                     </button>
@@ -555,7 +549,7 @@ export default function App() {
               </section>
 
               {/* Bestsellers Section */}
-              <section className="py-24 bg-linen/50">
+              <section className="py-24 bg-white/30 backdrop-blur-sm border-t border-b border-white/20">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                   <div className="flex flex-col sm:flex-row items-center justify-between mb-12">
                     <div>
@@ -578,7 +572,7 @@ export default function App() {
                       return (
                         <div 
                           key={product.id} 
-                          className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between group relative border border-linen/30 cursor-pointer"
+                          className="backdrop-blur-sm bg-white/50 border border-white/40 shadow-sm hover:shadow-md hover:bg-white/80 transition-all duration-300 rounded-3xl overflow-hidden flex flex-col justify-between group relative cursor-pointer"
                           onClick={() => setSelectedProduct(product)}
                         >
                           {/* Wishlist toggle */}
@@ -652,29 +646,29 @@ export default function App() {
                 </div>
               </section>
 
-              {/* USP Row */}
-              <section className="py-16 bg-bark text-white">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
-                  <div className="flex flex-col items-center">
-                    <div className="w-12 h-12 bg-clay/20 text-clay rounded-full flex items-center justify-center mb-4">
-                      <Truck className="w-6 h-6 text-linen" />
+              {/* USP Row - Frosted Glass Styled */}
+              <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+                  <div className="flex items-center gap-4 p-6 rounded-2xl bg-white/40 backdrop-blur-md border border-white/30 shadow-sm">
+                    <div className="w-12 h-12 rounded-full bg-[#B87050]/10 flex items-center justify-center text-2xl text-clay shrink-0">🚚</div>
+                    <div>
+                      <h3 className="text-sm font-bold text-[#5C3D2A] font-display">Gratis Versand</h3>
+                      <p className="text-xs opacity-70 mt-0.5">Innerhalb Deutschlands ab einem Bestellwert von 50 €.</p>
                     </div>
-                    <h3 className="font-display text-lg font-medium mb-1">Kostenloser Versand</h3>
-                    <p className="text-xs text-linen/70 max-w-xs">Innerhalb Deutschlands kostenfrei ab einem Bestellwert von 50 €.</p>
                   </div>
-                  <div className="flex flex-col items-center">
-                    <div className="w-12 h-12 bg-clay/20 text-clay rounded-full flex items-center justify-center mb-4">
-                      <ShieldCheck className="w-6 h-6 text-linen" />
+                  <div className="flex items-center gap-4 p-6 rounded-2xl bg-white/40 backdrop-blur-md border border-white/30 shadow-sm">
+                    <div className="w-12 h-12 rounded-full bg-[#B87050]/10 flex items-center justify-center text-2xl text-clay shrink-0">✨</div>
+                    <div>
+                      <h3 className="text-sm font-bold text-[#5C3D2A] font-display">Premium Qualität</h3>
+                      <p className="text-xs opacity-70 mt-0.5">Handverlesene, liebevoll ausgesuchte Stücke.</p>
                     </div>
-                    <h3 className="font-display text-lg font-medium mb-1">Sicherer Einkauf</h3>
-                    <p className="text-xs text-linen/70 max-w-xs">Deine Zahlungsdaten werden verschlüsselt übertragen. 30 Tage Rückgaberecht.</p>
                   </div>
-                  <div className="flex flex-col items-center">
-                    <div className="w-12 h-12 bg-clay/20 text-clay rounded-full flex items-center justify-center mb-4">
-                      <Sparkles className="w-6 h-6 text-linen" />
+                  <div className="flex items-center gap-4 p-6 rounded-2xl bg-white/40 backdrop-blur-md border border-white/30 shadow-sm">
+                    <div className="w-12 h-12 rounded-full bg-[#B87050]/10 flex items-center justify-center text-2xl text-clay shrink-0">🌱</div>
+                    <div>
+                      <h3 className="text-sm font-bold text-[#5C3D2A] font-display">Nachhaltigkeit</h3>
+                      <p className="text-xs opacity-70 mt-0.5">Umweltfreundlich verpackt & biologische Materialien.</p>
                     </div>
-                    <h3 className="font-display text-lg font-medium mb-1">Liebe zum Detail</h3>
-                    <p className="text-xs text-linen/70 max-w-xs">Unsere Stücke werden sorgfältig ausgesucht und umweltfreundlich verpackt.</p>
                   </div>
                 </div>
               </section>
@@ -690,7 +684,7 @@ export default function App() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.35 }}
-              className="py-12 bg-white"
+              className="py-12 bg-transparent"
             >
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 
@@ -705,7 +699,7 @@ export default function App() {
                 </div>
 
                 {/* Filters, Search, and Sorting Panel */}
-                <div className="bg-linen/30 p-6 rounded-2xl border border-linen flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-10">
+                <div className="backdrop-blur-md bg-white/40 p-6 rounded-3xl border border-white/30 flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-10 shadow-sm">
                   {/* Category Selection Pills */}
                   <div className="flex flex-wrap gap-2">
                     {(['all', 'deko', 'textilien', 'moebel'] as Category[]).map((cat) => (
@@ -715,7 +709,7 @@ export default function App() {
                         className={`px-5 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer ${
                           selectedCategory === cat 
                             ? 'bg-clay text-white shadow-sm' 
-                            : 'bg-white text-bark/80 hover:bg-sand hover:text-bark border border-linen'
+                            : 'bg-white/70 backdrop-blur-sm text-bark/80 hover:bg-sand hover:text-bark border border-white/40'
                         }`}
                       >
                         {cat === 'all' ? 'Alle' : cat}
@@ -733,7 +727,7 @@ export default function App() {
                         placeholder="Produkt suchen..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="pl-10 pr-4 py-2.5 w-full bg-white rounded-xl border border-linen text-sm focus:outline-none focus:ring-2 focus:ring-clay/30 focus:border-clay transition-all placeholder:text-bark/40"
+                        className="pl-10 pr-4 py-2.5 w-full bg-white/70 backdrop-blur-sm border border-white/40 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-clay/30 focus:border-clay transition-all placeholder:text-bark/40 text-bark"
                       />
                       {searchQuery && (
                         <button 
@@ -750,7 +744,7 @@ export default function App() {
                       <select
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value as any)}
-                        className="appearance-none bg-white border border-linen text-sm rounded-xl py-2.5 pl-4 pr-10 focus:outline-none focus:ring-2 focus:ring-clay/30 focus:border-clay cursor-pointer w-full"
+                        className="appearance-none bg-white/70 backdrop-blur-sm border border-white/40 text-sm rounded-xl py-2.5 pl-4 pr-10 focus:outline-none focus:ring-2 focus:ring-clay/30 focus:border-clay cursor-pointer w-full text-bark"
                       >
                         <option value="default">Standard-Sortierung</option>
                         <option value="price-asc">Preis: günstig zuerst</option>
@@ -778,7 +772,7 @@ export default function App() {
 
                 {/* Empty State */}
                 {filteredProducts.length === 0 && (
-                  <div className="text-center py-20 bg-linen/20 rounded-2xl border border-dashed border-linen">
+                  <div className="text-center py-20 bg-white/40 backdrop-blur-sm rounded-3xl border border-dashed border-white/60">
                     <HelpCircle className="w-12 h-12 text-bark/30 mx-auto mb-4 animate-bounce" />
                     <h3 className="text-xl font-display font-medium text-bark mb-1">Keine Produkte gefunden</h3>
                     <p className="text-sm text-bark/60 max-w-sm mx-auto">
@@ -800,7 +794,7 @@ export default function App() {
                     return (
                       <div 
                         key={product.id} 
-                        className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between group relative border border-linen/30 cursor-pointer"
+                        className="backdrop-blur-sm bg-white/50 border border-white/40 shadow-sm hover:shadow-md hover:bg-white/80 transition-all duration-300 rounded-3xl overflow-hidden flex flex-col justify-between group relative cursor-pointer"
                         onClick={() => setSelectedProduct(product)}
                       >
                         {/* Wishlist toggle */}
@@ -885,7 +879,7 @@ export default function App() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.35 }}
-              className="py-12 bg-white"
+              className="py-12 bg-transparent"
             >
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 
@@ -909,7 +903,7 @@ export default function App() {
                 </div>
 
                 {/* Sale Grid title */}
-                <div className="border-b border-linen pb-4 mb-8">
+                <div className="border-b border-white/20 pb-4 mb-8">
                   <h2 className="text-2xl font-display font-semibold text-bark">
                     Unsere unschlagbaren Angebote
                   </h2>
@@ -927,7 +921,7 @@ export default function App() {
                     return (
                       <div 
                         key={product.id}
-                        className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-red-100 flex flex-col md:flex-row relative cursor-pointer group"
+                        className="backdrop-blur-sm bg-white/50 border border-white/40 shadow-sm hover:shadow-md hover:bg-white/80 transition-all duration-300 rounded-3xl overflow-hidden flex flex-col md:flex-row relative cursor-pointer group"
                         onClick={() => setSelectedProduct(product)}
                       >
                         {/* Red SALE badge with custom % */}
@@ -1021,7 +1015,7 @@ export default function App() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.35 }}
-              className="py-12 bg-white"
+              className="py-12 bg-transparent"
             >
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 
@@ -1106,7 +1100,7 @@ export default function App() {
       </main>
 
       {/* FOOTER */}
-      <footer className="bg-ink text-white pt-20 pb-10 border-t border-linen">
+      <footer className="bg-[#1E1A17] text-white pt-20 pb-10 border-t border-white/10 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 pb-16 border-b border-bark/30">
             {/* Column 1: Info */}
